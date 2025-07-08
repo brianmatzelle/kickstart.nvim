@@ -698,6 +698,8 @@ require('lazy').setup({
             },
           },
         },
+        jdtls = {},
+        pyright = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -736,46 +738,72 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-    },
-  },
+  -- { -- Autoformat
+  --   'stevearc/conform.nvim',
+  --   event = { 'BufWritePre' },
+  --   cmd = { 'ConformInfo' },
+  --   keys = {
+  --     {
+  --       '<leader>f',
+  --       function()
+  --         require('conform').format { async = true, lsp_format = 'fallback' }
+  --       end,
+  --       mode = '',
+  --       desc = '[F]ormat buffer',
+  --     },
+  --   },
+  --   opts = {
+  --     notify_on_error = false,
+  --     format_on_save = function(bufnr)
+  --       -- Disable "format_on_save lsp_fallback" for languages that don't
+  --       -- have a well standardized coding style. You can add additional
+  --       -- languages here or re-enable it for the disabled ones.
+  --       local disable_filetypes = { c = true, cpp = true }
+  --       if disable_filetypes[vim.bo[bufnr].filetype] then
+  --         return nil
+  --       else
+  --         return {
+  --           timeout_ms = 500,
+  --           lsp_format = 'fallback',
+  --         }
+  --       end
+  --     end,
+  --     formatters_by_ft = {
+  --       lua = { 'stylua' },
+  --       javascript = { 'prettierd', 'prettier', stop_after_first = true },
+  --       typescript = { 'prettierd', 'prettier', stop_after_first = true },
+  --       javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+  --       typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+  --       json = { 'prettierd', 'prettier', stop_after_first = true },
+  --       html = { 'prettierd', 'prettier', stop_after_first = true },
+  --       css = { 'prettierd', 'prettier', stop_after_first = true },
+  --       scss = { 'prettierd', 'prettier', stop_after_first = true },
+  --       markdown = { 'prettierd', 'prettier', stop_after_first = true },
+  --     },
+  --     formatters = {
+  --       prettier = {
+  --         args = {
+  --           '--tab-width', '2',
+  --           '--use-tabs', 'false',
+  --           '--arrow-parens', 'avoid',
+  --           '--trailing-comma', 'none',
+  --           '--end-of-line', 'lf',
+  --           '--stdin-filepath', '$FILENAME',
+  --         },
+  --       },
+  --       prettierd = {
+  --         args = {
+  --           '--tab-width', '2',
+  --           '--use-tabs', 'false',
+  --           '--arrow-parens', 'avoid',
+  --           '--trailing-comma', 'none',
+  --           '--end-of-line', 'lf',
+  --           '$FILENAME',
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
 
   { -- Autocompletion
     'saghen/blink.cmp',
@@ -974,11 +1002,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -1014,3 +1042,25 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.expandtab = true -- Use spaces instead of tabs
+vim.opt.tabstop = 2 -- Tab width (visual spacing)
+vim.opt.softtabstop = 2 -- Number of spaces per tab when editing
+vim.opt.shiftwidth = 2 -- Indent width (for >> and auto-indent)
+
+-- File type specific overrides to match VS Code config
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'html',
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.softtabstop = 4
+    vim.opt_local.shiftwidth = 4
+  end,
+})
+
+vim.keymap.set('i', '<C-;>', '<C-o>A;')
+
+-- increase the window width +- change amount
+vim.keymap.set('n', '<C-w>>', '<C-w>10>', { desc = 'Increase window width by 10'})
+vim.keymap.set('n', '<C-w><', '<C-w>10<', { desc = 'Decrease window width by 10'})
