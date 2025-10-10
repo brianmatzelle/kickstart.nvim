@@ -925,62 +925,174 @@ require('lazy').setup({
   --     vim.cmd.colorscheme 'tokyonight-night'
   --   end,
   -- },
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+  { -- Matrix-style theme to match Ghostty terminal
+    'folke/tokyonight.nvim',
     priority = 1000,
     config = function()
-      require("catppuccin").setup({
-        flavour = "auto", -- latte, frappe, macchiato, mocha
-        background = { -- :h background
-          light = "latte",
-          dark = "mocha",
-        },
-        transparent_background = false, -- disables setting the background color.
-        show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-        term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
-        dim_inactive = {
-          enabled = false, -- dims the background color of inactive window
-          shade = "dark",
-          percentage = 0.15, -- percentage of the shade to apply to the inactive window
-        },
-        no_italic = false, -- Force no italic
-        no_bold = false, -- Force no bold
-        no_underline = false, -- Force no underline
-        styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-          comments = { "italic" }, -- Change the style of comments
-          conditionals = { "italic" },
-          loops = {},
+      require('tokyonight').setup({
+        style = 'night',
+        transparent = false,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
           functions = {},
-          keywords = {},
-          strings = {},
           variables = {},
-          numbers = {},
-          booleans = {},
-          properties = {},
-          types = {},
-          operators = {},
-          -- miscs = {}, -- Uncomment to turn off hard-coded styles
+          sidebars = 'dark',
+          floats = 'dark',
         },
-        color_overrides = {},
-        custom_highlights = {},
-        default_integrations = true,
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          nvimtree = true,
-          treesitter = true,
-          notify = false,
-          mini = {
-            enabled = true,
-            indentscope_color = "",
-          },
-          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
-        },
+        sidebars = { 'qf', 'help' },
+        day_brightness = 0.3,
+        hide_inactive_statusline = false,
+        dim_inactive = false,
+        lualine_bold = false,
+        
+        -- Custom matrix-style color overrides
+        on_colors = function(colors)
+          -- Matrix green theme - matching Ghostty config
+          colors.bg = '#000000'        -- Pure black background
+          colors.bg_dark = '#000000'   -- Pure black
+          colors.bg_float = '#000000'  -- Pure black floats
+          colors.bg_highlight = '#001100' -- Very dark green highlight
+          colors.bg_popup = '#000000'  -- Pure black popups
+          colors.bg_search = '#003300' -- Dark green search
+          colors.bg_sidebar = '#000000' -- Pure black sidebar
+          colors.bg_statusline = '#000000' -- Pure black statusline
+          colors.bg_visual = '#002200'  -- Dark green visual selection
+          
+          -- Matrix green foreground colors
+          colors.fg = '#00FF00'        -- Bright green text (matching Ghostty)
+          colors.fg_dark = '#00CC00'   -- Slightly darker green
+          colors.fg_float = '#00FF00'  -- Bright green floats
+          colors.fg_gutter = '#004400' -- Dark green gutter
+          colors.fg_sidebar = '#00AA00' -- Medium green sidebar
+          
+          -- Matrix-themed accent colors
+          colors.blue = '#00FF00'      -- Green instead of blue
+          colors.blue0 = '#00DD00'     -- Darker green
+          colors.blue1 = '#00FF00'     -- Bright green
+          colors.blue2 = '#00CC00'     -- Medium green
+          colors.blue5 = '#00AA00'     -- Darker green
+          colors.blue6 = '#008800'     -- Even darker green
+          colors.blue7 = '#006600'     -- Very dark green
+          
+          colors.cyan = '#00FFAA'      -- Matrix cyan-green
+          colors.green = '#00FF00'     -- Pure matrix green
+          colors.green1 = '#00DD00'    -- Darker green
+          colors.green2 = '#00BB00'    -- Even darker green
+          
+          colors.magenta = '#00FF88'   -- Green-tinted magenta
+          colors.orange = '#00FF66'    -- Green-tinted orange
+          colors.purple = '#00FF44'    -- Green-tinted purple
+          colors.red = '#00FF22'       -- Green-tinted red (for errors, but matrix style)
+          colors.red1 = '#00DD22'      -- Darker green-red
+          colors.teal = '#00FFCC'      -- Matrix teal
+          colors.yellow = '#00FFDD'    -- Matrix yellow-green
+          
+          -- Terminal colors for consistency
+          colors.terminal_black = '#000000'
+          colors.terminal_red = '#00FF22'
+          colors.terminal_green = '#00FF00'
+          colors.terminal_yellow = '#00FFDD'
+          colors.terminal_blue = '#00FF00'
+          colors.terminal_magenta = '#00FF88'
+          colors.terminal_cyan = '#00FFAA'
+          colors.terminal_white = '#00FF00'
+          colors.terminal_bright_black = '#004400'
+          colors.terminal_bright_red = '#00FF44'
+          colors.terminal_bright_green = '#00FF00'
+          colors.terminal_bright_yellow = '#00FFDD'
+          colors.terminal_bright_blue = '#00FF00'
+          colors.terminal_bright_magenta = '#00FF88'
+          colors.terminal_bright_cyan = '#00FFAA'
+          colors.terminal_bright_white = '#00FF00'
+        end,
+
+        -- Custom highlight overrides for matrix aesthetic
+        on_highlights = function(hl, c)
+          -- Cursor and selection
+          hl.Cursor = { bg = c.green, fg = c.bg }
+          hl.CursorLine = { bg = '#001100' }
+          hl.CursorColumn = { bg = '#001100' }
+          hl.Visual = { bg = '#002200' }
+          hl.VisualNOS = { bg = '#002200' }
+          
+          -- Line numbers
+          hl.LineNr = { fg = '#004400' }
+          hl.CursorLineNr = { fg = c.green, bold = true }
+          
+          -- Search
+          hl.Search = { bg = '#003300', fg = c.green }
+          hl.IncSearch = { bg = '#004400', fg = c.green }
+          
+          -- Statusline
+          hl.StatusLine = { bg = '#000000', fg = c.green }
+          hl.StatusLineNC = { bg = '#000000', fg = '#006600' }
+          
+          -- Popup menus
+          hl.Pmenu = { bg = '#000000', fg = c.green }
+          hl.PmenuSel = { bg = '#002200', fg = c.green }
+          hl.PmenuSbar = { bg = '#001100' }
+          hl.PmenuThumb = { bg = '#004400' }
+          
+          -- Diagnostics with matrix colors
+          hl.DiagnosticError = { fg = '#00FF22' }
+          hl.DiagnosticWarn = { fg = '#00FFDD' }
+          hl.DiagnosticInfo = { fg = '#00FFAA' }
+          hl.DiagnosticHint = { fg = '#00FF88' }
+          
+          -- Git signs
+          hl.GitSignsAdd = { fg = c.green }
+          hl.GitSignsChange = { fg = '#00FFAA' }
+          hl.GitSignsDelete = { fg = '#00FF22' }
+          
+          -- Telescope
+          hl.TelescopeNormal = { bg = '#000000', fg = c.green }
+          hl.TelescopeBorder = { bg = '#000000', fg = '#004400' }
+          hl.TelescopePromptNormal = { bg = '#000000', fg = c.green }
+          hl.TelescopePromptBorder = { bg = '#000000', fg = '#004400' }
+          hl.TelescopePromptTitle = { bg = '#000000', fg = c.green }
+          hl.TelescopePreviewTitle = { bg = '#000000', fg = c.green }
+          hl.TelescopeResultsTitle = { bg = '#000000', fg = c.green }
+          hl.TelescopeSelection = { bg = '#002200', fg = c.green }
+          hl.TelescopeSelectionCaret = { fg = c.green }
+          
+          -- Tree-sitter syntax highlighting with matrix theme
+          hl['@keyword'] = { fg = c.green, bold = true }
+          hl['@function'] = { fg = '#00DD00' }
+          hl['@string'] = { fg = '#00FFAA' }
+          hl['@number'] = { fg = '#00FFDD' }
+          hl['@boolean'] = { fg = '#00FF88' }
+          hl['@comment'] = { fg = '#006600', italic = false }
+          hl['@variable'] = { fg = c.green }
+          hl['@type'] = { fg = '#00CC00' }
+          hl['@constant'] = { fg = '#00FF66' }
+          
+          -- Make sure background is consistently black
+          hl.Normal = { bg = '#000000', fg = c.green }
+          hl.NormalFloat = { bg = '#000000', fg = c.green }
+          hl.NormalNC = { bg = '#000000', fg = c.green }
+          hl.SignColumn = { bg = '#000000' }
+          hl.EndOfBuffer = { fg = '#002200' }
+          
+          -- Tab line
+          hl.TabLine = { bg = '#000000', fg = '#006600' }
+          hl.TabLineFill = { bg = '#000000' }
+          hl.TabLineSel = { bg = '#001100', fg = c.green }
+        end,
       })
 
-      -- setup must be called before loading
-      vim.cmd.colorscheme "catppuccin"
+      -- Load the colorscheme
+      vim.cmd.colorscheme('tokyonight')
+      
+      -- Additional matrix-style customizations
+      vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#004400', bg = '#000000' })
+      vim.api.nvim_set_hl(0, 'VertSplit', { fg = '#004400', bg = '#000000' })
+      
+      -- Make sure terminal background matches
+      if vim.fn.has('termguicolors') == 1 then
+        vim.o.termguicolors = true
+      end
     end,
   },
 
