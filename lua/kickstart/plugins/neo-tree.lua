@@ -15,6 +15,7 @@ return {
   },
   opts = {
     filesystem = {
+      use_libuv_file_watcher = true, -- Auto-refresh on file changes
       window = {
         mappings = {
           ['\\'] = 'close_window',

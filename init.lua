@@ -176,6 +176,14 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Swap 'x' and 'd' behavior: 'x' cuts (delete + yank), 'd' deletes without yanking
+vim.keymap.set({'n', 'v'}, 'd', '"_d', { desc = 'Delete without yanking' })
+vim.keymap.set({'n', 'v'}, 'dd', '"_dd', { desc = 'Delete line without yanking' })
+vim.keymap.set('n', 'D', '"_D', { desc = 'Delete to EOL without yanking' })
+vim.keymap.set({'n', 'v'}, 'x', 'd', { desc = 'Cut (delete and yank)' })
+vim.keymap.set('n', 'xx', 'dd', { desc = 'Cut line' })
+vim.keymap.set('n', 'X', 'D', { desc = 'Cut to end of line' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
